@@ -9,9 +9,9 @@
   </androidPackages>
   <iosPods>
     <iosPod name="CandlestickSDK" version="~&gt; 1.0.0">
-<!--       <sources>
-        <source>https://github.com/OpenVesselIO/iOS-Candlestick-Pods.git</source>
-      </sources> -->
+      <sources>
+        <!-- <source>https://github.com/OpenVesselIO/iOS-Candlestick-Pods.git</source> -->
+      </sources>
     </iosPod>
   </iosPods>
 </dependencies>
