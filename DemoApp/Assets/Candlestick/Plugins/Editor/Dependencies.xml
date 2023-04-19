@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dependencies>
+  <androidPackages>
+    <repositories>
+      <repository>https://artifacts.openvessel.io/maven/</repository>
+      <repository>https://jcenter.bintray.com/</repository>
+    </repositories>
+    <androidPackage spec="com.candlestick:sdk:[1.0.0,1.1.0["/>
+  </androidPackages>
+  <iosPods>
+    <iosPod name="CandlestickSDK" version="~&gt; 1.0.0">
+<!--       <sources>
+        <source>https://github.com/OpenVesselIO/iOS-Candlestick-Pods.git</source>
+      </sources> -->
+    </iosPod>
+  </iosPods>
+</dependencies>
