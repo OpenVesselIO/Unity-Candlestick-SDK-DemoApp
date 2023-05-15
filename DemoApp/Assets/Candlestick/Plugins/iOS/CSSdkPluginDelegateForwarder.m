@@ -20,6 +20,13 @@ extern "C" {
     // life cycle management
     void UnityPause(int pause);
     void UnitySendMessage(const char* obj, const char* method, const char* msg);
+
+    static const char * const kCallbacksObjectName = "CSSdkCallbacks";
+
+    static void sdk_send_message(const char *method, NSDictionary *json)
+    {
+        cs_unity_send_message(kCallbacksObjectName, method, json);
+    }
 #ifdef __cplusplus
 }
 #endif
@@ -48,7 +55,18 @@ extern "C" {
 
 - (void)candlestickSdkDidStart:(CSKSdk *)sdk
 {
-    UnitySendMessage("CSSdkCallbacks", "ForwardOnSdkInitializedEvent", "");
+    sdk_send_message("ForwardOnSdkInitializedEvent", @{});
+}
+
+- (void)candlestickSdk:(CSKSdk *)sdk didFinishConsentFlowWithUserInfo:(CSKConsentFlowUserInfo *)consentFlowUserInfo
+{
+    sdk_send_message("ForwardOnSdkConsentFlowFinishedEvent", @{
+        @"experimentInfo": @{
+            @"installationId": consentFlowUserInfo.experimentUserInfo.installationId,
+            @"genericFlow": consentFlowUserInfo.experimentUserInfo.genericFlow,
+            @"initTimers": consentFlowUserInfo.experimentUserInfo.initializationTimers,
+        },
+    });
 }
 
 + (CSSdkPluginDelegateForwarder *)sharedInstance

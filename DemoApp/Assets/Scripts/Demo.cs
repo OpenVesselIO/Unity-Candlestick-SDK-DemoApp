@@ -37,7 +37,9 @@ public class Demo : MonoBehaviour
 
     private EarningsManagerCallbacks.AuthCodeMetadata _earningsAuthCodeMetadata;
     private EarningsManagerCallbacks.AuthCodeMetadata _earningsVerificationCodeMetadata;
-
+#if UNITY_IOS
+    private string genericFlow;
+#endif
     void Start()
     {
         Debug.Log("Starting...");
@@ -58,6 +60,9 @@ public class Demo : MonoBehaviour
 #endif
 
         Candlestick.Sdk.Environment = environment;
+#if UNITY_IOS
+        Candlestick.SdkCallbacks.OnSdkConsentFlowFinished += HandleConsentFlowInfo;
+#endif
         Candlestick.AppConnectManagerCallbacks.OnStateUpdated += HandleAppConnectState;
         Candlestick.PresenterCallbacks.OnPortalShow += HandlePortalShow;
         Candlestick.PresenterCallbacks.OnPortalDismiss += HandlePortalDismiss;
@@ -166,7 +171,14 @@ public class Demo : MonoBehaviour
             _earningsVerificationCodeMetadata.CreatedAt
         );
     }
+#if UNITY_IOS
+    private void HandleConsentFlowInfo(Candlestick.ConsentFlowInfo consentFlowInfo)
+    {
+        genericFlow = consentFlowInfo.ExperimentInfo.GenericFlow;
 
+        UpdateStatusText();
+    }
+#endif
     private void HandleAppConnectState(Candlestick.AppConnectState state)
     {
         Debug.Log("Got new state: " + state);
@@ -228,6 +240,13 @@ public class Demo : MonoBehaviour
         var statusText = "";
 
         statusText += "(" + Candlestick.Sdk.Environment + ")";
+#if UNITY_IOS
+        if (genericFlow != null)
+        {
+            statusText += "\n";
+            statusText += $"Generic Flow: {genericFlow}";
+        }
+#endif
         statusText += "\n";
         statusText += $"Portal Show/Dismiss: {_portalShowCallCount}/{_portalDismissCallCount}";
 
