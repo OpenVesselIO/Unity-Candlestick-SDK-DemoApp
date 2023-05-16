@@ -2,7 +2,7 @@
 <dependencies>
   <androidPackages>
     <repositories>
-      <repository>https://artifacts.openvessel.io/maven/</repository>
+      <repository>https://us-east1-maven.pkg.dev/prj-cs-shared-public-a17f/mvn-public/</repository>
       <repository>https://jcenter.bintray.com/</repository>
     </repositories>
     <androidPackage spec="com.candlestick:sdk:[1.0.0,1.1.0["/>
