@@ -60,11 +60,19 @@ extern "C" {
 
 - (void)candlestickSdk:(CSKSdk *)sdk didFinishConsentFlowWithUserInfo:(CSKConsentFlowUserInfo *)consentFlowUserInfo
 {
+    NSError *error;
+    NSData *extrasData = [NSJSONSerialization dataWithJSONObject: consentFlowUserInfo.experimentUserInfo.extras
+                                                         options: kNilOptions
+                                                           error: &error];
+
+    if (extrasData == nil) {
+        return;
+    }
+
     sdk_send_message("ForwardOnSdkConsentFlowFinishedEvent", @{
         @"experimentInfo": @{
             @"installationId": consentFlowUserInfo.experimentUserInfo.installationId,
-            @"genericFlow": consentFlowUserInfo.experimentUserInfo.genericFlow,
-            @"initTimers": consentFlowUserInfo.experimentUserInfo.initializationTimers,
+            @"extras": extrasData,
         },
     });
 }

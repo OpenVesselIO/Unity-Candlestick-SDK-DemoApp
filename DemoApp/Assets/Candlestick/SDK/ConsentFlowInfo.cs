@@ -8,14 +8,12 @@ namespace Candlestick
     {
 
         public string InstallationId { get; }
-        public string GenericFlow { get; }
-        public string InitTimers { get; }
+        public string Extras { get; }
 
-        public ConsentFlowExperimentInfo(string installationId, string genericFlow, string initTimers)
+        public ConsentFlowExperimentInfo(string installationId, string extras)
         {
             InstallationId = installationId;
-            GenericFlow = genericFlow;
-            InitTimers = initTimers;
+            Extras = extras;
         }
 
     }
