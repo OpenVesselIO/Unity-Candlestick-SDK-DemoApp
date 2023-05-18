@@ -5,6 +5,16 @@ using UnityEngine.UI;
 
 public class Demo : MonoBehaviour
 {
+
+    [Serializable]
+    private class ExperimentExtras
+    {
+
+        [SerializeField] internal string genericFlow;
+        [SerializeField] internal string initTimers;
+
+    }
+
     private const string USER_ID = "<Unique User ID of your application>";
 
     private Candlestick.AppConnectState _appConnectState;
@@ -174,7 +184,7 @@ public class Demo : MonoBehaviour
 #if UNITY_IOS
     private void HandleConsentFlowInfo(Candlestick.ConsentFlowInfo consentFlowInfo)
     {
-        genericFlow = consentFlowInfo.ExperimentInfo.GenericFlow;
+        genericFlow = JsonUtility.FromJson<ExperimentExtras>(consentFlowInfo.ExperimentInfo.Extras).genericFlow;
 
         UpdateStatusText();
     }

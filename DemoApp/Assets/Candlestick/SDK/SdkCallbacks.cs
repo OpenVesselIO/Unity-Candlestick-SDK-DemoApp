@@ -15,8 +15,7 @@ namespace Candlestick
         {
 
             [SerializeField] internal string installationId;
-            [SerializeField] internal string genericFlow;
-            [SerializeField] internal string initTimers;
+            [SerializeField] internal string extras;
 
         }
 
@@ -75,8 +74,7 @@ namespace Candlestick
                 new ConsentFlowInfo(
                     new ConsentFlowExperimentInfo(
                         consentFlowInfoJson.experimentInfo.installationId,
-                        consentFlowInfoJson.experimentInfo.genericFlow,
-                        consentFlowInfoJson.experimentInfo.initTimers
+                        consentFlowInfoJson.experimentInfo.extras
                     )
                 )
             );
