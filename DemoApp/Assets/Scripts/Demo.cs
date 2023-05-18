@@ -11,7 +11,7 @@ public class Demo : MonoBehaviour
     {
 
         [SerializeField] internal string genericFlow;
-        [SerializeField] internal string initTimers;
+        [SerializeField] internal string inittimers;
 
     }
 
