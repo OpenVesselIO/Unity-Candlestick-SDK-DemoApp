@@ -16,10 +16,5 @@ namespace Candlestick
          * This is an internal development environment. It is reserved for internal development only
          */
         Development,
-
-        /**
-         * This is an internal development environment. It is reserved for internal testing only
-         */
-        Testing,
     }
 }

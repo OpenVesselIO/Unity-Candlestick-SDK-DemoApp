@@ -22,8 +22,6 @@ extern "C" {
     {
         if (strcmp("PRODUCTION", environment) == 0) {
             [CSKSdk.sharedInstance setEnvironment: CSKEnvironmentProduction];
-        } else if (strcmp("TESTING", environment) == 0) {
-            [CSKSdk.sharedInstance setEnvironment: CSKEnvironmentTesting];
         } else if (strcmp("STAGING", environment) == 0) {
             [CSKSdk.sharedInstance setEnvironment: CSKEnvironmentStaging];
         } else if (strcmp("DEVELOPMENT", environment) == 0) {
