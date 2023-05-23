@@ -11,6 +11,31 @@ namespace Candlestick
     public class EarningsManageriOs: EarningsManagerBase
     {
 
+        public class ExperimentInfo
+        {
+
+            public string InstallationId { get; }
+
+            // The field is nullable.
+            public string Extras { get; }
+
+            public ExperimentInfo(string installationId, string extras)
+            {
+                InstallationId = installationId;
+                Extras = extras;
+            }
+
+        }
+
+        [Serializable]
+        private class ExperimentInfoJson
+        {
+
+            [SerializeField] internal string installationId;
+            [SerializeField] internal string extras;
+
+        }
+
         [DllImport("__Internal")]
         private static extern void _CSTrackRevenuedAd(string adType);
 
@@ -74,6 +99,23 @@ namespace Candlestick
             var json = new VerificationJson(email, code, codeCreatedAt);
 
             _CSVerifyEmail(JsonUtility.ToJson(json));
+        }
+
+        [DllImport("__Internal")]
+        private static extern string _CSGetEarningsExperimentUserInfo();
+
+        public ExperimentInfo GetExperimentInfo()
+        {
+            var jsonString = _CSGetEarningsExperimentUserInfo();
+
+            if (jsonString == null)
+            {
+                return null;
+            }
+
+            var json = JsonUtility.FromJson<ExperimentInfoJson>(jsonString);
+
+            return new ExperimentInfo(json.installationId, json.extras);
         }
 
     }

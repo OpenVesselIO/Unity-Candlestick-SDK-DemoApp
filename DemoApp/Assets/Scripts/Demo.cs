@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Timers;
 using Candlestick;
 using UnityEngine;
 using UnityEngine.UI;
@@ -49,7 +50,9 @@ public class Demo : MonoBehaviour
     private EarningsManagerCallbacks.AuthCodeMetadata _earningsVerificationCodeMetadata;
 #if UNITY_IOS
     private string genericFlow;
+    private Timer earningsExperimentInfoPollingTimer;
 #endif
+
     void Start()
     {
         Debug.Log("Starting...");
@@ -89,6 +92,12 @@ public class Demo : MonoBehaviour
 
         Debug.Log("Initializing the SDK...");
         Candlestick.Sdk.Initialize(USER_ID);
+#if UNITY_IOS
+        earningsExperimentInfoPollingTimer = new Timer(1000);
+        earningsExperimentInfoPollingTimer.Elapsed += EarningsExperimentInfoPollingTick;
+        earningsExperimentInfoPollingTimer.AutoReset = true;
+        earningsExperimentInfoPollingTimer.Enabled = true;
+#endif
     }
 
     public void DisconnectCurrent()
@@ -182,11 +191,9 @@ public class Demo : MonoBehaviour
         );
     }
 #if UNITY_IOS
-    private void HandleConsentFlowInfo(Candlestick.ConsentFlowInfo consentFlowInfo)
+    private void HandleConsentFlowInfo()
     {
-        genericFlow = JsonUtility.FromJson<ExperimentExtras>(consentFlowInfo.ExperimentInfo.Extras).genericFlow;
-
-        UpdateStatusText();
+        // do nothing
     }
 #endif
     private void HandleAppConnectState(Candlestick.AppConnectState state)
@@ -291,4 +298,21 @@ public class Demo : MonoBehaviour
         }
     }
 
+#if UNITY_IOS
+    private void EarningsExperimentInfoPollingTick(System.Object source, ElapsedEventArgs e)
+    {
+        var info = Candlestick.Sdk.EarningsManager.GetExperimentInfo();
+
+        if (info.Extras == null)
+        {
+            return;
+        }
+
+        earningsExperimentInfoPollingTimer.Enabled = false;
+
+        genericFlow = JsonUtility.FromJson<ExperimentExtras>(info.Extras).genericFlow;
+
+        UpdateStatusText();
+    }
+#endif
 }

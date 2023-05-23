@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using static Candlestick.EarningsManageriOs;
 using Logger = Candlestick.Utils.Logger;
 
 namespace Candlestick
@@ -40,6 +41,11 @@ namespace Candlestick
 
         public void VerifyEmail(string email, string verificationCode, Int64 codeCreatedAt)
         {
+        }
+
+        public ExperimentInfo GetExperimentInfo()
+        {
+            return null;
         }
 
     }
