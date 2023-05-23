@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using static Candlestick.EarningsManageriOs;
 using Logger = Candlestick.Utils.Logger;
 
 namespace Candlestick
