@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Timers;
 using Candlestick;
 using UnityEngine;
 using UnityEngine.UI;
@@ -49,8 +48,20 @@ public class Demo : MonoBehaviour
     private EarningsManagerCallbacks.AuthCodeMetadata _earningsAuthCodeMetadata;
     private EarningsManagerCallbacks.AuthCodeMetadata _earningsVerificationCodeMetadata;
 #if UNITY_IOS
-    private string genericFlow;
-    private Timer earningsExperimentInfoPollingTimer;
+    private string genericFlow
+    {
+        get
+        {
+            var info = Candlestick.Sdk.EarningsManager.GetExperimentInfo();
+
+            if (info.Extras == null)
+            {
+                return null;
+            }
+
+            return JsonUtility.FromJson<ExperimentExtras>(info.Extras).genericFlow;
+        }
+    }
 #endif
 
     void Start()
@@ -84,6 +95,9 @@ public class Demo : MonoBehaviour
         Candlestick.EarningsManagerCallbacks.OnAuthFailure += HandleEarningsAuthFailure;
         Candlestick.EarningsManagerCallbacks.OnVerificationFailure += HandleEarningsVerificationFailure;
         Candlestick.EarningsManagerCallbacks.OnVerificationSuccess += HandleEarningsVerificationSuccess;
+#if UNITY_IOS
+        Candlestick.EarningsManagerCallbacks.OnExperimentInfoUpdated += UpdateStatusText;
+#endif
 
         Candlestick.Sdk.Configuration = new SdkConfiguration
         {
@@ -92,12 +106,6 @@ public class Demo : MonoBehaviour
 
         Debug.Log("Initializing the SDK...");
         Candlestick.Sdk.Initialize(USER_ID);
-#if UNITY_IOS
-        earningsExperimentInfoPollingTimer = new Timer(1000);
-        earningsExperimentInfoPollingTimer.Elapsed += EarningsExperimentInfoPollingTick;
-        earningsExperimentInfoPollingTimer.AutoReset = true;
-        earningsExperimentInfoPollingTimer.Enabled = true;
-#endif
     }
 
     public void DisconnectCurrent()
@@ -298,21 +306,4 @@ public class Demo : MonoBehaviour
         }
     }
 
-#if UNITY_IOS
-    private void EarningsExperimentInfoPollingTick(System.Object source, ElapsedEventArgs e)
-    {
-        var info = Candlestick.Sdk.EarningsManager.GetExperimentInfo();
-
-        if (info.Extras == null)
-        {
-            return;
-        }
-
-        earningsExperimentInfoPollingTimer.Enabled = false;
-
-        genericFlow = JsonUtility.FromJson<ExperimentExtras>(info.Extras).genericFlow;
-
-        UpdateStatusText();
-    }
-#endif
 }

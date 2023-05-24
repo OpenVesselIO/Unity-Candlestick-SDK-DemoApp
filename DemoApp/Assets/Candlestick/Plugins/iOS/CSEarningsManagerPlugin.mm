@@ -2,16 +2,9 @@
 
 #import <Candlestick/Candlestick.h>
 
-#import "CSSdkPluginUtils.h"
+#import "CSEarningsManagerDelegateForwarder.h"
 
 extern "C" {
-
-    static const char * const kCallbacksObjectName = "CSEarningsManagerCallbacks";
-
-    static void earnings_send_message(const char *method, NSDictionary *json)
-    {
-        cs_unity_send_message(kCallbacksObjectName, method, json);
-    }
 
     static void earnings_send_auth_error(NSString *msg)
     {

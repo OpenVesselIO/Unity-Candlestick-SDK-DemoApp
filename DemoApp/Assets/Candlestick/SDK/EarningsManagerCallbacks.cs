@@ -57,6 +57,7 @@ namespace Candlestick
         private static Action<string> _onAuthFailure;
         private static Action<string> _onVerificationFailure;
         private static Action _onVerificationSuccess;
+        private static Action _onExperimentInfoUpdated;
 
         public static event Action<AuthCodeMetadata> OnAuthCodeMetadata
         {
@@ -128,6 +129,20 @@ namespace Candlestick
             }
         }
 
+        public static event Action OnExperimentInfoUpdated
+        {
+            add
+            {
+                Logger.LogSubscribedToEvent("OnExperimentInfoUpdated");
+                _onExperimentInfoUpdated += value;
+            }
+            remove
+            {
+                Logger.LogUnsubscribedToEvent("OnExperimentInfoUpdated");
+                _onExperimentInfoUpdated -= value;
+            }
+        }
+
         public void ForwardOnAuthCodeMetadataEvent(string json)
         {
             var eventJson = JsonUtility.FromJson<AuthCodeMetadataJson>(json);
@@ -157,6 +172,11 @@ namespace Candlestick
         public void ForwardOnVerificationSuccessEvent(string unused)
         {
             EventInvoker.InvokeEvent(_onVerificationSuccess);
+        }
+
+        public void ForwardOnExperimentInfoUpdatedEvent(string unused)
+        {
+            EventInvoker.InvokeEvent(_onExperimentInfoUpdated);
         }
 
         void Awake()
