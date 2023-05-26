@@ -42,5 +42,10 @@ namespace Candlestick
         {
         }
 
+        public ExperimentInfo GetExperimentInfo()
+        {
+            return null;
+        }
+
     }
 }

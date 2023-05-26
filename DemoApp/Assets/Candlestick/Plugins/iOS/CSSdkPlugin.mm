@@ -6,6 +6,7 @@
 #import "CSSdkPluginDelegateForwarder.h"
 #import "CSAppConnectManagerDelegateForwarder.h"
 #import "CSPresenterPluginDelegateForwarder.h"
+#import "CSEarningsManagerDelegateForwarder.h"
 
 extern "C" {
         
@@ -14,6 +15,7 @@ extern "C" {
         [CSSdkPluginDelegateForwarder.sharedInstance attachDelegate];
         [CSAppConnectManagerDelegateForwarder.sharedInstance attachDelegate];
         [CSPresenterPluginDelegateForwarder.sharedInstance attachDelegate];
+        [CSEarningsManagerDelegateForwarder.sharedInstance attachDelegate];
         
         [CSKSdk.sharedInstance startWithUserId: NSSTRING(userId)];
     }

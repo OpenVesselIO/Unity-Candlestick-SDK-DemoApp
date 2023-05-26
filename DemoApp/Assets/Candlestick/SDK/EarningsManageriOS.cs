@@ -76,6 +76,23 @@ namespace Candlestick
             _CSVerifyEmail(JsonUtility.ToJson(json));
         }
 
+        [DllImport("__Internal")]
+        private static extern string _CSGetEarningsExperimentUserInfo();
+
+        public ExperimentInfo GetExperimentInfo()
+        {
+            var jsonString = _CSGetEarningsExperimentUserInfo();
+
+            if (jsonString == null)
+            {
+                return null;
+            }
+
+            var json = JsonUtility.FromJson<ExperimentInfoJson>(jsonString);
+
+            return new ExperimentInfo(json.installationId, json.extras);
+        }
+
     }
 #endif
 }

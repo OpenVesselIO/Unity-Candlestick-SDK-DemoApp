@@ -48,8 +48,22 @@ public class Demo : MonoBehaviour
     private EarningsManagerCallbacks.AuthCodeMetadata _earningsAuthCodeMetadata;
     private EarningsManagerCallbacks.AuthCodeMetadata _earningsVerificationCodeMetadata;
 #if UNITY_IOS
-    private string genericFlow;
+    private string genericFlow
+    {
+        get
+        {
+            var info = Candlestick.Sdk.EarningsManager.GetExperimentInfo();
+
+            if (info.Extras == null)
+            {
+                return null;
+            }
+
+            return JsonUtility.FromJson<ExperimentExtras>(info.Extras).genericFlow;
+        }
+    }
 #endif
+
     void Start()
     {
         Debug.Log("Starting...");
@@ -81,6 +95,9 @@ public class Demo : MonoBehaviour
         Candlestick.EarningsManagerCallbacks.OnAuthFailure += HandleEarningsAuthFailure;
         Candlestick.EarningsManagerCallbacks.OnVerificationFailure += HandleEarningsVerificationFailure;
         Candlestick.EarningsManagerCallbacks.OnVerificationSuccess += HandleEarningsVerificationSuccess;
+#if UNITY_IOS
+        Candlestick.EarningsManagerCallbacks.OnExperimentInfoUpdated += UpdateStatusText;
+#endif
 
         Candlestick.Sdk.Configuration = new SdkConfiguration
         {
@@ -182,11 +199,9 @@ public class Demo : MonoBehaviour
         );
     }
 #if UNITY_IOS
-    private void HandleConsentFlowInfo(Candlestick.ConsentFlowInfo consentFlowInfo)
+    private void HandleConsentFlowInfo()
     {
-        genericFlow = JsonUtility.FromJson<ExperimentExtras>(consentFlowInfo.ExperimentInfo.Extras).genericFlow;
-
-        UpdateStatusText();
+        // do nothing
     }
 #endif
     private void HandleAppConnectState(Candlestick.AppConnectState state)

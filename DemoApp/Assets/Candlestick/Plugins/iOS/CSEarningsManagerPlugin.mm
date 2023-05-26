@@ -2,16 +2,9 @@
 
 #import <Candlestick/Candlestick.h>
 
-#import "CSSdkPluginUtils.h"
+#import "CSEarningsManagerDelegateForwarder.h"
 
 extern "C" {
-
-    static const char * const kCallbacksObjectName = "CSEarningsManagerCallbacks";
-
-    static void earnings_send_message(const char *method, NSDictionary *json)
-    {
-        cs_unity_send_message(kCallbacksObjectName, method, json);
-    }
 
     static void earnings_send_auth_error(NSString *msg)
     {
@@ -183,6 +176,43 @@ extern "C" {
                 earnings_send_verification_success();
             }
         }];
+    }
+
+    const char * _CSGetEarningsExperimentUserInfo()
+    {
+        CSKEarningsExperimentUserInfo *experimentUserInfo = CSKSdk.sharedInstance.earningsManager.experimentUserInfo;
+        NSDictionary<NSString *, id> *extras = experimentUserInfo.extras;
+
+        NSString *extrasJsonString;
+
+        if (extras) {
+            NSError *error;
+            NSData *extrasJsonData = [NSJSONSerialization dataWithJSONObject: extras
+                                                                     options: kNilOptions
+                                                                       error: &error];
+
+            extrasJsonString = [[NSString alloc] initWithData:extrasJsonData encoding:NSUTF8StringEncoding];
+        }
+
+        NSDictionary *experimentUserInfoDict = @{
+            @"installationId": experimentUserInfo.installationId,
+            @"extras": extrasJsonString ?: NSNull.null,
+        };
+
+        NSError *error;
+        NSData *experimentUserInfoJsonData = [NSJSONSerialization dataWithJSONObject: experimentUserInfoDict
+                                                                             options: kNilOptions
+                                                                               error: &error];
+
+        if (experimentUserInfoJsonData == nil) {
+            return NULL;
+        }
+
+        void *result = malloc((size_t)experimentUserInfoJsonData.length);
+
+        [experimentUserInfoJsonData getBytes:result length:experimentUserInfoJsonData.length];
+
+        return (const char *)result;
     }
     
 }

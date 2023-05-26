@@ -58,25 +58,9 @@ extern "C" {
     sdk_send_message("ForwardOnSdkInitializedEvent", @{});
 }
 
-- (void)candlestickSdk:(CSKSdk *)sdk didFinishConsentFlowWithUserInfo:(CSKConsentFlowUserInfo *)consentFlowUserInfo
+- (void)candlestickSdkDidFinishConsentFlow:(CSKSdk *)sdk
 {
-    NSError *error;
-    NSData *extrasJsonData = [NSJSONSerialization dataWithJSONObject: consentFlowUserInfo.experimentUserInfo.extras
-                                                             options: kNilOptions
-                                                               error: &error];
-
-    if (extrasJsonData == nil) {
-        return;
-    }
-
-    NSString *extrasJsonString = [[NSString alloc] initWithData:extrasJsonData encoding:NSUTF8StringEncoding];
-
-    sdk_send_message("ForwardOnSdkConsentFlowFinishedEvent", @{
-        @"experimentInfo": @{
-            @"installationId": consentFlowUserInfo.experimentUserInfo.installationId,
-            @"extras": extrasJsonString,
-        },
-    });
+    sdk_send_message("ForwardOnSdkConsentFlowFinishedEvent", @{});
 }
 
 + (CSSdkPluginDelegateForwarder *)sharedInstance

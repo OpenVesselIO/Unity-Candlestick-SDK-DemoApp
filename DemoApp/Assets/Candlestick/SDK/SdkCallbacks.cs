@@ -10,26 +10,9 @@ namespace Candlestick
     {
         public static SdkCallbacks Instance { get; private set; }
 
-        [Serializable]
-        private class ConsentFlowExperimentInfoJson
-        {
-
-            [SerializeField] internal string installationId;
-            [SerializeField] internal string extras;
-
-        }
-
-        [Serializable]
-        private class ConsentFlowInfoJson
-        {
-
-            [SerializeField] internal ConsentFlowExperimentInfoJson experimentInfo;
-
-        }
-
         private static Action _onSdkInitialized;
 #if UNITY_IOS
-        private static Action<ConsentFlowInfo> _onSdkConsentFlowFinished;
+        private static Action _onSdkConsentFlowFinished;
 #endif
 
         public static event Action OnSdkInitialized
@@ -46,7 +29,7 @@ namespace Candlestick
             }
         }
 #if UNITY_IOS
-        public static event Action<ConsentFlowInfo> OnSdkConsentFlowFinished
+        public static event Action OnSdkConsentFlowFinished
         {
             add
             {
@@ -67,17 +50,7 @@ namespace Candlestick
 #if UNITY_IOS
         public void ForwardOnSdkConsentFlowFinishedEvent(string json)
         {
-            var consentFlowInfoJson = JsonUtility.FromJson<ConsentFlowInfoJson>(json);
-
-            EventInvoker.InvokeEvent(
-                _onSdkConsentFlowFinished,
-                new ConsentFlowInfo(
-                    new ConsentFlowExperimentInfo(
-                        consentFlowInfoJson.experimentInfo.installationId,
-                        consentFlowInfoJson.experimentInfo.extras
-                    )
-                )
-            );
+            EventInvoker.InvokeEvent(_onSdkConsentFlowFinished);
         }
 #endif
         void Awake()
