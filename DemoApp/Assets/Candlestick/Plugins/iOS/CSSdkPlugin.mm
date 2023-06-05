@@ -41,7 +41,6 @@ extern "C" {
         if ( jsonError == nullptr && configurationDict ) {
             
             CSKLogLevel minLogLevel = CSKLogLevelError;
-            NSURL * callbackUrl = NULL;
             
             if ([[configurationDict allKeys] containsObject: @"MinLogLevel"]) {
                 int minLogLevelInt = [configurationDict[@"MinLogLevel"] integerValue];
@@ -59,13 +58,8 @@ extern "C" {
                 }
             }
             
-            if ([configurationDict objectForKey: @"CallbackUrl"]) {
-                callbackUrl = [NSURL URLWithString:[configurationDict objectForKey: @"CallbackUrl"]];
-            }
-            
             CSKSdkConfiguration * configuration = [[CSKSdkConfiguration alloc] init];
             configuration.minLogLevel = minLogLevel;
-            configuration.callbackUrl = callbackUrl;
             
             [CSKSdk.sharedInstance setConfiguration: configuration];
         }
