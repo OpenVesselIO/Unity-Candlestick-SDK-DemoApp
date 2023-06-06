@@ -8,7 +8,7 @@
     <androidPackage spec="com.candlestick:sdk:[1.0.2,1.1.0["/>
   </androidPackages>
   <iosPods>
-    <iosPod name="CandlestickSDK" version="~&gt; 1.0.6">
+    <iosPod name="CandlestickSDK" version="~&gt; 1.0.8">
       <sources>
         <source>https://github.com/OpenVesselIO/iOS-Candlestick-Pods.git</source>
       </sources>
