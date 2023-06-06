@@ -17,7 +17,7 @@ namespace Candlestick
             get => _configuration;
             set
             {
-                _configuration= value;
+                _configuration = value;
 
                 var configurationStr = JsonUtility.ToJson(value);
                 _CSSetConfiguration(configurationStr);

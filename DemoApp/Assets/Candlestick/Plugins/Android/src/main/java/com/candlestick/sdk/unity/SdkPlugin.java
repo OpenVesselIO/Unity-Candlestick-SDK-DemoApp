@@ -48,12 +48,9 @@ public class SdkPlugin
                 final int logLevelInt = settings.getInt( "MinLogLevel" );
                 final SdkConfiguration.SdkLogLevel logLevel = SdkConfiguration.SdkLogLevel.valueOfOrdinal( logLevelInt );
 
-                final String callbackUrl = settings.getString( "CallbackUrl" );
-
                 final CandlestickSdk sdk = CandlestickSdk.getInstance( currentActivity );
                 sdk.setConfiguration( SdkConfiguration.builder()
                                               .minLogLevel( logLevel )
-                                              .callbackUrl( Uri.parse( callbackUrl ) )
                                               .build() );
             }
             catch ( Exception ex )
