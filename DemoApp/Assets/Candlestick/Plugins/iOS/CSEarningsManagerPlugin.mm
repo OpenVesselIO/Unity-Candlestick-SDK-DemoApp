@@ -208,7 +208,8 @@ extern "C" {
             return NULL;
         }
 
-        void *result = malloc((size_t)experimentUserInfoJsonData.length);
+        char *result = (char *)malloc((size_t)experimentUserInfoJsonData.length + 1);
+        result[experimentUserInfoJsonData.length] = '\0';
 
         [experimentUserInfoJsonData getBytes:result length:experimentUserInfoJsonData.length];
 
