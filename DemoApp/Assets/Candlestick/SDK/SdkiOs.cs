@@ -46,12 +46,19 @@ namespace Candlestick
         [DllImport("__Internal")]
         private static extern void _CSInitialize(string userId);
 
+        /// <summary>
+        /// Initialize Candlestick SDK
+        /// </summary>
+        public static void Initialize()
+        {
+            Initialize(null);
+        }
 
         /// <summary>
         /// Initialize Candlestick SDK
         /// </summary>
         /// <param name="userId">
-        /// In-app user ID
+        /// Optional in-app user ID
         /// </param>
         public static void Initialize(string userId)
         {

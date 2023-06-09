@@ -16,6 +16,11 @@ namespace Candlestick
         {
         }
 
+        public void ShowEarnings()
+        {
+            ShowEarnings(new EarningsPresentationSettings());
+        }
+
         public void ShowEarnings(string userId)
         {
             ShowEarnings(new EarningsPresentationSettings(userId));
@@ -28,6 +33,11 @@ namespace Candlestick
 
         public void GenerateAuthCodeForPhoneNumber(string phoneNumber)
         {
+        }
+
+        public void LoginByPhoneAuthCode(string phoneNumber, string code, Int64 codeCreatedAt)
+        {
+            LoginByPhoneAuthCode(phoneNumber, code, codeCreatedAt, null);
         }
 
         public void LoginByPhoneAuthCode(string phoneNumber, string authCode, Int64 codeCreatedAt, string userId)

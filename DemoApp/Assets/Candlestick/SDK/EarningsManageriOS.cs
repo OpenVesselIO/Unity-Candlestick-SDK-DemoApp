@@ -30,6 +30,11 @@ namespace Candlestick
         [DllImport("__Internal")]
         private static extern void _CSShowEarnings(string settingsJson);
 
+        public void ShowEarnings()
+        {
+            ShowEarnings(new EarningsPresentationSettings());
+        }
+
         public void ShowEarnings(string userId)
         {
             ShowEarnings(new EarningsPresentationSettings(userId));
@@ -50,6 +55,11 @@ namespace Candlestick
 
         [DllImport("__Internal")]
         private static extern void _CSLoginByPhoneAuthCode(string loginJson);
+
+        public void LoginByPhoneAuthCode(string phoneNumber, string code, Int64 codeCreatedAt)
+        {
+            LoginByPhoneAuthCode(phoneNumber, code, codeCreatedAt, null);
+        }
 
         public void LoginByPhoneAuthCode(string phoneNumber, string code, Int64 codeCreatedAt, string userId)
         {

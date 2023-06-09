@@ -45,6 +45,14 @@ namespace Candlestick
         /// <summary>
         /// Initialize Candlestick SDK
         /// </summary>
+        public static void Initialize()
+        {
+            Initialize(null);
+        }
+
+        /// <summary>
+        /// Initialize Candlestick SDK
+        /// </summary>
         public static void Initialize(string userId)
         {
             PluginClass.CallStatic("initialize", userId);

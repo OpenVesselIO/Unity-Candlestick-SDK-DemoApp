@@ -54,7 +54,7 @@ public class EarningsManagerPlugin
                             try
                             {
                                 sdk.getEarningsManager().startEarningsActivity(
-                                        EarningsActivitySettings.builder( settings.getString( "userId" ) )
+                                        EarningsActivitySettings.builder( settings.optString( "userId" ) )
                                                 .promoType( promoType )
                                                 .triggerName( settings.getString( "triggerName" ) )
                                                 .build(),
@@ -120,7 +120,7 @@ public class EarningsManagerPlugin
                                 jsonObject.getString( "phoneNumber" ),
                                 jsonObject.getString( "code" ),
                                 jsonObject.getLong( "codeCreatedAt" ),
-                                jsonObject.getString( "userId" )
+                                jsonObject.optString( "userId" )
                         )
                         .whenComplete( (unused, th) -> {
                             if ( th != null )

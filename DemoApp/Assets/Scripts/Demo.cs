@@ -15,8 +15,6 @@ public class Demo : MonoBehaviour
 
     }
 
-    private const string USER_ID = "<Unique User ID of your application>";
-
     private Candlestick.AppConnectState _appConnectState;
 
     public Text _statusText;
@@ -105,7 +103,7 @@ public class Demo : MonoBehaviour
         };
 
         Debug.Log("Initializing the SDK...");
-        Candlestick.Sdk.Initialize(USER_ID);
+        Candlestick.Sdk.Initialize();
     }
 
     public void DisconnectCurrent()
@@ -139,14 +137,14 @@ public class Demo : MonoBehaviour
     {
         Debug.Log("Showing earnings with static promo inside of the current application...");
 
-        Candlestick.Sdk.EarningsManager.ShowEarnings(USER_ID);
+        Candlestick.Sdk.EarningsManager.ShowEarnings();
     }
 
     public void ShowEarningsWithVideoPromo()
     {
         Debug.Log("Showing earnings with video promo inside of the current application...");
 
-        var settings = new EarningsPresentationSettings(USER_ID);
+        var settings = new EarningsPresentationSettings();
         settings.PromoType = EarningsPromoType.Video;
         settings.TriggerName = "show_earnings_with_video_promo_button";
 
@@ -180,8 +178,7 @@ public class Demo : MonoBehaviour
         Candlestick.Sdk.EarningsManager.LoginByPhoneAuthCode(
             _earningsAuthCodeMetadata.PhoneNumber,
             _earningsAuthPhoneCodeInputField.text,
-            _earningsAuthCodeMetadata.CreatedAt,
-            USER_ID
+            _earningsAuthCodeMetadata.CreatedAt
         );
     }
 

@@ -37,6 +37,8 @@ namespace Candlestick
         public EarningsPromoType PromoType = EarningsPromoType.Static;
         public string TriggerName;
 
+        public EarningsPresentationSettings() : this(null) {}
+
         public EarningsPresentationSettings(string userId)
         {
             this.UserId = userId;
