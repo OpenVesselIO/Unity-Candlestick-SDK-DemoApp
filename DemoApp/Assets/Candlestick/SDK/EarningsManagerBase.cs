@@ -26,7 +26,7 @@ namespace Candlestick
 
         Static,
 
-        Video,
+        //Video,
 
     }
 

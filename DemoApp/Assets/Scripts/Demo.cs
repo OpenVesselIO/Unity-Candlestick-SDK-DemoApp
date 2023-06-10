@@ -142,13 +142,13 @@ public class Demo : MonoBehaviour
 
     public void ShowEarningsWithVideoPromo()
     {
-        Debug.Log("Showing earnings with video promo inside of the current application...");
+        //Debug.Log("Showing earnings with video promo inside of the current application...");
 
-        var settings = new EarningsPresentationSettings();
-        settings.PromoType = EarningsPromoType.Video;
-        settings.TriggerName = "show_earnings_with_video_promo_button";
+        //var settings = new EarningsPresentationSettings();
+        //settings.PromoType = EarningsPromoType.Video;
+        //settings.TriggerName = "show_earnings_with_video_promo_button";
 
-        Candlestick.Sdk.EarningsManager.ShowEarnings(settings);
+        //Candlestick.Sdk.EarningsManager.ShowEarnings(settings);
     }
 
     public void TrackRandomRevenuedAd()
