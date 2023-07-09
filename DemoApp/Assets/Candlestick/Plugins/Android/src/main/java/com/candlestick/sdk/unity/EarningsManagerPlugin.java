@@ -2,16 +2,15 @@ package com.candlestick.sdk.unity;
 
 import android.os.AsyncTask;
 
-import com.unity3d.player.UnityPlayer;
-
-import org.json.JSONObject;
-
+import com.candlestick.sdk.CandlestickSdk;
 import com.candlestick.sdk.EarningsActivitySettings;
 import com.candlestick.sdk.EarningsManager;
-import com.candlestick.sdk.CandlestickSdk;
 import com.candlestick.sdk.utils.ExceptionToUserMessage;
 import com.candlestick.sdk.utils.Logger;
 import com.candlestick.sdk.utils.StringUtils;
+import com.unity3d.player.UnityPlayer;
+
+import org.json.JSONObject;
 
 import static com.unity3d.player.UnityPlayer.currentActivity;
 
@@ -26,9 +25,12 @@ public class EarningsManagerPlugin
     {
         final CandlestickSdk sdk = CandlestickSdk.getInstance( currentActivity );
 
-        EarningsManager.AdType.maybeValueOf( adTypeString ).ifPresent( adType -> {
-            sdk.getEarningsManager().trackRevenuedAd( adType );
-        } );
+        final EarningsManager.AdType adTypeOrNull = EarningsManager.AdType.valueOfOrNull( adTypeString );
+
+        if ( adTypeOrNull != null )
+        {
+            sdk.getEarningsManager().trackRevenuedAd( adTypeOrNull );
+        }
     }
 
     public static void trackImpression(final String triggerName)
@@ -48,24 +50,26 @@ public class EarningsManagerPlugin
 
                 final CandlestickSdk sdk = CandlestickSdk.getInstance( currentActivity );
 
-                EarningsActivitySettings.PromoType
-                        .maybeValueOf( settings.getString( "promoType" ) )
-                        .ifPresent( promoType -> {
-                            try
-                            {
-                                sdk.getEarningsManager().startEarningsActivity(
-                                        EarningsActivitySettings.builder( settings.optString( "userId" ) )
-                                                .promoType( promoType )
-                                                .triggerName( settings.getString( "triggerName" ) )
-                                                .build(),
-                                        currentActivity
-                                );
-                            }
-                            catch ( Exception ex )
-                            {
-                                Logger.userError( TAG, "Unable to parse settings", ex );
-                            }
-                        } );
+                final EarningsActivitySettings.PromoType promoTypeOrNull = EarningsActivitySettings.PromoType
+                        .valueOfOrNull( settings.getString( "promoType" ) );
+
+                if ( promoTypeOrNull != null )
+                {
+                    try
+                    {
+                        sdk.getEarningsManager().startEarningsActivity(
+                                EarningsActivitySettings.builder( settings.optString( "userId" ) )
+                                        .promoType( promoTypeOrNull )
+                                        .triggerName( settings.getString( "triggerName" ) )
+                                        .build(),
+                                currentActivity
+                        );
+                    }
+                    catch ( Exception ex )
+                    {
+                        Logger.userError( TAG, "Unable to parse settings", ex );
+                    }
+                }
             }
             catch ( Exception ex )
             {
@@ -78,31 +82,30 @@ public class EarningsManagerPlugin
     {
         final CandlestickSdk sdk = CandlestickSdk.getInstance( currentActivity );
 
-        sdk.getEarningsManager().generatePhoneAuthCode( phoneNumber )
-                .whenCompleteAsync( (authCodeMetadata, th) -> {
-                    if ( authCodeMetadata != null )
-                    {
-                        try
-                        {
-                            UnitySendMessageAsync(
-                                    "ForwardOnAuthCodeMetadataEvent",
-                                    new JSONObject()
-                                            .put( "phoneNumber", phoneNumber )
-                                            .put( "createdAt", authCodeMetadata.getCreatedAt() )
-                                            .put( "expiresAt", authCodeMetadata.getExpiresAt() )
-                                            .put( "ttl", authCodeMetadata.getCooldown() )
-                            );
-                        }
-                        catch ( Exception ex )
-                        {
-                            UnitySendAuthErrorAsync( ExceptionToUserMessage.convert( ex, currentActivity ) );
-                        }
-                    }
-                    else
-                    {
-                        UnitySendAuthErrorAsync( ExceptionToUserMessage.convert( th, currentActivity ) );
-                    }
-                } );
+        sdk.getEarningsManager().generatePhoneAuthCode( phoneNumber, (authCodeMetadata, th) -> {
+            if ( authCodeMetadata != null )
+            {
+                try
+                {
+                    UnitySendMessageAsync(
+                            "ForwardOnAuthCodeMetadataEvent",
+                            new JSONObject()
+                                    .put( "phoneNumber", phoneNumber )
+                                    .put( "createdAt", authCodeMetadata.getCreatedAt() )
+                                    .put( "expiresAt", authCodeMetadata.getExpiresAt() )
+                                    .put( "ttl", authCodeMetadata.getCooldown() )
+                    );
+                }
+                catch ( Exception ex )
+                {
+                    UnitySendAuthErrorAsync( ExceptionToUserMessage.convert( ex, currentActivity ) );
+                }
+            }
+            else
+            {
+                UnitySendAuthErrorAsync( ExceptionToUserMessage.convert( th, currentActivity ) );
+            }
+        } );
     }
 
     public static void loginByPhoneAuthCode(final String json)
@@ -115,19 +118,18 @@ public class EarningsManagerPlugin
 
                 final CandlestickSdk sdk = CandlestickSdk.getInstance( currentActivity );
 
-                sdk.getEarningsManager()
-                        .loginByPhoneAuthCode(
-                                jsonObject.getString( "phoneNumber" ),
-                                jsonObject.getString( "code" ),
-                                jsonObject.getLong( "codeCreatedAt" ),
-                                jsonObject.optString( "userId" )
-                        )
-                        .whenComplete( (unused, th) -> {
+                sdk.getEarningsManager().loginByPhoneAuthCode(
+                        jsonObject.getString( "phoneNumber" ),
+                        jsonObject.getString( "code" ),
+                        jsonObject.getLong( "codeCreatedAt" ),
+                        jsonObject.optString( "userId" ),
+                        th -> {
                             if ( th != null )
                             {
                                 UnitySendAuthErrorAsync( ExceptionToUserMessage.convert( th, currentActivity ) );
                             }
-                        } );
+                        }
+                );
             }
             catch ( Exception ex )
             {
@@ -140,32 +142,30 @@ public class EarningsManagerPlugin
     {
         final CandlestickSdk sdk = CandlestickSdk.getInstance( currentActivity );
 
-        sdk.getEarningsManager().generateEmailVerificationCode( email )
-                .whenCompleteAsync( (authCodeMetadata, th) -> {
-                    if ( authCodeMetadata != null )
-                    {
-                        try
-                        {
-                            UnitySendMessageAsync(
-                                    "ForwardOnVerificationCodeMetadataEvent",
-                                    new JSONObject()
-                                            .put( "email", email )
-                                            .put( "createdAt", authCodeMetadata.getCreatedAt() )
-                                            .put( "expiresAt", authCodeMetadata.getExpiresAt() )
-                                            .put( "ttl", authCodeMetadata.getCooldown() )
-                            );
-                        }
-                        catch ( Exception ex )
-                        {
-                            UnitySendVerificationErrorAsync( ExceptionToUserMessage.convert( ex, currentActivity ) );
-                        }
-                    }
-                    else
-                    {
-                        UnitySendVerificationErrorAsync( ExceptionToUserMessage.convert( th, currentActivity ) );
-                    }
-                } );
-        ;
+        sdk.getEarningsManager().generateEmailVerificationCode( email, (authCodeMetadata, th) -> {
+            if ( authCodeMetadata != null )
+            {
+                try
+                {
+                    UnitySendMessageAsync(
+                            "ForwardOnVerificationCodeMetadataEvent",
+                            new JSONObject()
+                                    .put( "email", email )
+                                    .put( "createdAt", authCodeMetadata.getCreatedAt() )
+                                    .put( "expiresAt", authCodeMetadata.getExpiresAt() )
+                                    .put( "ttl", authCodeMetadata.getCooldown() )
+                    );
+                }
+                catch ( Exception ex )
+                {
+                    UnitySendVerificationErrorAsync( ExceptionToUserMessage.convert( ex, currentActivity ) );
+                }
+            }
+            else
+            {
+                UnitySendVerificationErrorAsync( ExceptionToUserMessage.convert( th, currentActivity ) );
+            }
+        } );
     }
 
     public static void verifyEmailByCode(final String json)
@@ -178,13 +178,11 @@ public class EarningsManagerPlugin
 
                 final CandlestickSdk sdk = CandlestickSdk.getInstance( currentActivity );
 
-                sdk.getEarningsManager()
-                        .verifyEmailByCode(
-                                jsonObject.getString( "email" ),
-                                jsonObject.getString( "code" ),
-                                jsonObject.getLong( "codeCreatedAt" )
-                        )
-                        .whenComplete( (unused, th) -> {
+                sdk.getEarningsManager().verifyEmailByCode(
+                        jsonObject.getString( "email" ),
+                        jsonObject.getString( "code" ),
+                        jsonObject.getLong( "codeCreatedAt" ),
+                        th -> {
                             if ( th != null )
                             {
                                 UnitySendVerificationErrorAsync( ExceptionToUserMessage.convert( th, currentActivity ) );
@@ -193,7 +191,8 @@ public class EarningsManagerPlugin
                             {
                                 UnitySendVerificationSuccess();
                             }
-                        } );
+                        }
+                );
             }
             catch ( Exception ex )
             {
