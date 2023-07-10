@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import com.candlestick.sdk.CandlestickSdk;
 import com.candlestick.sdk.EarningsActivitySettings;
 import com.candlestick.sdk.EarningsManager;
-import com.candlestick.sdk.utils.ExceptionToUserMessage;
 import com.candlestick.sdk.utils.Logger;
 import com.candlestick.sdk.utils.StringUtils;
 import com.unity3d.player.UnityPlayer;
@@ -78,129 +77,6 @@ public class EarningsManagerPlugin
         }
     }
 
-    public static void generatePhoneAuthCode(final String phoneNumber)
-    {
-        final CandlestickSdk sdk = CandlestickSdk.getInstance( currentActivity );
-
-        sdk.getEarningsManager().generatePhoneAuthCode( phoneNumber, (authCodeMetadata, th) -> {
-            if ( authCodeMetadata != null )
-            {
-                try
-                {
-                    UnitySendMessageAsync(
-                            "ForwardOnAuthCodeMetadataEvent",
-                            new JSONObject()
-                                    .put( "phoneNumber", phoneNumber )
-                                    .put( "createdAt", authCodeMetadata.getCreatedAt() )
-                                    .put( "expiresAt", authCodeMetadata.getExpiresAt() )
-                                    .put( "ttl", authCodeMetadata.getCooldown() )
-                    );
-                }
-                catch ( Exception ex )
-                {
-                    UnitySendAuthErrorAsync( ExceptionToUserMessage.convert( ex, currentActivity ) );
-                }
-            }
-            else
-            {
-                UnitySendAuthErrorAsync( ExceptionToUserMessage.convert( th, currentActivity ) );
-            }
-        } );
-    }
-
-    public static void loginByPhoneAuthCode(final String json)
-    {
-        if ( StringUtils.isValidString( json ) )
-        {
-            try
-            {
-                final JSONObject jsonObject = new JSONObject( json );
-
-                final CandlestickSdk sdk = CandlestickSdk.getInstance( currentActivity );
-
-                sdk.getEarningsManager().loginByPhoneAuthCode(
-                        jsonObject.getString( "phoneNumber" ),
-                        jsonObject.getString( "code" ),
-                        jsonObject.getLong( "codeCreatedAt" ),
-                        jsonObject.optString( "userId" ),
-                        th -> {
-                            if ( th != null )
-                            {
-                                UnitySendAuthErrorAsync( ExceptionToUserMessage.convert( th, currentActivity ) );
-                            }
-                        }
-                );
-            }
-            catch ( Exception ex )
-            {
-                Logger.userError( TAG, "Unable to parse parameters", ex );
-            }
-        }
-    }
-
-    public static void generateEmailVerificationCode(final String email)
-    {
-        final CandlestickSdk sdk = CandlestickSdk.getInstance( currentActivity );
-
-        sdk.getEarningsManager().generateEmailVerificationCode( email, (authCodeMetadata, th) -> {
-            if ( authCodeMetadata != null )
-            {
-                try
-                {
-                    UnitySendMessageAsync(
-                            "ForwardOnVerificationCodeMetadataEvent",
-                            new JSONObject()
-                                    .put( "email", email )
-                                    .put( "createdAt", authCodeMetadata.getCreatedAt() )
-                                    .put( "expiresAt", authCodeMetadata.getExpiresAt() )
-                                    .put( "ttl", authCodeMetadata.getCooldown() )
-                    );
-                }
-                catch ( Exception ex )
-                {
-                    UnitySendVerificationErrorAsync( ExceptionToUserMessage.convert( ex, currentActivity ) );
-                }
-            }
-            else
-            {
-                UnitySendVerificationErrorAsync( ExceptionToUserMessage.convert( th, currentActivity ) );
-            }
-        } );
-    }
-
-    public static void verifyEmailByCode(final String json)
-    {
-        if ( StringUtils.isValidString( json ) )
-        {
-            try
-            {
-                final JSONObject jsonObject = new JSONObject( json );
-
-                final CandlestickSdk sdk = CandlestickSdk.getInstance( currentActivity );
-
-                sdk.getEarningsManager().verifyEmailByCode(
-                        jsonObject.getString( "email" ),
-                        jsonObject.getString( "code" ),
-                        jsonObject.getLong( "codeCreatedAt" ),
-                        th -> {
-                            if ( th != null )
-                            {
-                                UnitySendVerificationErrorAsync( ExceptionToUserMessage.convert( th, currentActivity ) );
-                            }
-                            else
-                            {
-                                UnitySendVerificationSuccess();
-                            }
-                        }
-                );
-            }
-            catch ( Exception ex )
-            {
-                Logger.userError( TAG, "Unable to parse parameters", ex );
-            }
-        }
-    }
-
     private static void UnitySendMessageAsync(final String method, final JSONObject jsonObj)
     {
         UnitySendMessageAsync( method, jsonObj.toString() );
@@ -211,21 +87,6 @@ public class EarningsManagerPlugin
         AsyncTask.THREAD_POOL_EXECUTOR.execute( () -> {
             UnityPlayer.UnitySendMessage( CALLBACKS_OBJECT_NAME, method, msg );
         } );
-    }
-
-    private static void UnitySendAuthErrorAsync(final String msg)
-    {
-        UnitySendMessageAsync( "ForwardOnAuthFailureEvent", msg );
-    }
-
-    private static void UnitySendVerificationErrorAsync(final String msg)
-    {
-        UnitySendMessageAsync( "ForwardOnVerificationFailureEvent", msg );
-    }
-
-    private static void UnitySendVerificationSuccess()
-    {
-        UnitySendMessageAsync( "ForwardOnVerificationSuccessEvent", "" );
     }
 
 }

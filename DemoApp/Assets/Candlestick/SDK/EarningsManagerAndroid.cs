@@ -38,35 +38,6 @@ namespace Candlestick
             PluginClass.CallStatic("showEarnings", JsonUtility.ToJson(new PresentationSettingsJson(settings)));
         }
 
-        public void GenerateAuthCodeForPhoneNumber(string phoneNumber)
-        {
-            PluginClass.CallStatic("generatePhoneAuthCode", phoneNumber);
-        }
-
-        public void LoginByPhoneAuthCode(string phoneNumber, string code, Int64 codeCreatedAt)
-        {
-            LoginByPhoneAuthCode(phoneNumber, code, codeCreatedAt, null);
-        }
-
-        public void LoginByPhoneAuthCode(string phoneNumber, string code, Int64 codeCreatedAt, string userId)
-        {
-            var json = new LoginJson(phoneNumber, code, codeCreatedAt, userId);
-
-            PluginClass.CallStatic("loginByPhoneAuthCode", JsonUtility.ToJson(json));
-        }
-
-        public void GenerateVerificationCodeForEmail(string email)
-        {
-            PluginClass.CallStatic("generateEmailVerificationCode", email);
-        }
-
-        public void VerifyEmail(string email, string code, Int64 codeCreatedAt)
-        {
-            var json = new VerificationJson(email, code, codeCreatedAt);
-
-            PluginClass.CallStatic("verifyEmailByCode", JsonUtility.ToJson(json));
-        }
-
     }
 #endif
 }

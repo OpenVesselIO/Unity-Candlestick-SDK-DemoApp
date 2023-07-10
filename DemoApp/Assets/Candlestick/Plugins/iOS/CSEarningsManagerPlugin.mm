@@ -6,21 +6,6 @@
 
 extern "C" {
 
-    static void earnings_send_auth_error(NSString *msg)
-    {
-        UnitySendMessage(kCallbacksObjectName, "ForwardOnAuthFailureEvent", msg.UTF8String);
-    }
-
-    static void earnings_send_verification_error(NSString *msg)
-    {
-        UnitySendMessage(kCallbacksObjectName, "ForwardOnVerificationFailureEvent", msg.UTF8String);
-    }
-
-    static void earnings_send_verification_success()
-    {
-        UnitySendMessage(kCallbacksObjectName, "ForwardOnVerificationSuccessEvent", "");
-    }
-
     void _CSTrackRevenuedAd(const char * adTypeCString)
     {
         CSKAdType adType;
@@ -87,95 +72,6 @@ extern "C" {
         [CSKSdk.sharedInstance.earningsManager presentEarningsFromViewController: UNITY_VIEW_CONTROLLER
                                                                     withSettings: settings
                                                                         animated: YES];
-    }
-
-    void _CSGenerateAuthCodeForPhoneNumber(const char * cPhoneNumber)
-    {
-        NSString *phoneNumber = NSSTRING(cPhoneNumber);
-
-        [CSKSdk.sharedInstance.earningsManager generateAuthCodeForPhoneNumber:phoneNumber resultHandler:
-         ^(CSKEarningsAuthCodeMetadata * _Nullable authCodeMetadata, NSError * _Nullable error) {
-            if (authCodeMetadata) {
-                earnings_send_message("ForwardOnAuthCodeMetadataEvent", @{
-                    @"phoneNumber": phoneNumber,
-                    @"createdAt": @(authCodeMetadata.createdAt),
-                    @"expiresAt": @(authCodeMetadata.expiresAt),
-                    @"ttl": @(authCodeMetadata.ttl),
-                });
-            } else {
-                earnings_send_auth_error(error.localizedDescription);
-            }
-        }];
-    }
-
-    void _CSLoginByPhoneAuthCode(const char * json)
-    {
-        NSData *jsonData = [NSSTRING(json) dataUsingEncoding:NSUTF8StringEncoding];
-
-        NSError *error;
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData: jsonData
-                                                             options: kNilOptions
-                                                               error: &error];
-
-        if (dict == nil) {
-            return;
-        }
-
-        [CSKSdk.sharedInstance.earningsManager
-         loginWithPhoneNumber:dict[@"phoneNumber"]
-         code:dict[@"code"]
-         codeCreatedAt:[dict[@"codeCreatedAt"] longLongValue]
-         userId:dict[@"userId"]
-         completionHandler:^(NSError * _Nullable error) {
-            if (error) {
-                earnings_send_auth_error(error.localizedDescription);
-            }
-        }];
-    }
-
-    void _CSGenerateVerificationCodeForEmail(const char * cEmail)
-    {
-        NSString *email = NSSTRING(cEmail);
-
-        [CSKSdk.sharedInstance.earningsManager generateVerificationCodeForEmail:email resultHandler:
-         ^(CSKEarningsVerificationCodeMetadata * _Nullable codeMetadata, NSError * _Nullable error) {
-            if (codeMetadata) {
-                earnings_send_message("ForwardOnVerificationCodeMetadataEvent", @{
-                    @"email": email,
-                    @"createdAt": @(codeMetadata.createdAt),
-                    @"expiresAt": @(codeMetadata.expiresAt),
-                    @"ttl": @(codeMetadata.ttl),
-                });
-            } else {
-                earnings_send_auth_error(error.localizedDescription);
-            }
-        }];
-    }
-
-    void _CSVerifyEmail(const char * json)
-    {
-        NSData *jsonData = [NSSTRING(json) dataUsingEncoding:NSUTF8StringEncoding];
-
-        NSError *error;
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData: jsonData
-                                                             options: kNilOptions
-                                                               error: &error];
-
-        if (dict == nil) {
-            return;
-        }
-
-        [CSKSdk.sharedInstance.earningsManager
-         verifyEmail:dict[@"email"]
-         code:dict[@"code"]
-         codeCreatedAt:[dict[@"codeCreatedAt"] longLongValue]
-         completionHandler:^(NSError * _Nullable error) {
-            if (error) {
-                earnings_send_verification_error(error.localizedDescription);
-            } else {
-                earnings_send_verification_success();
-            }
-        }];
     }
 
     const char * _CSGetEarningsExperimentUserInfo()

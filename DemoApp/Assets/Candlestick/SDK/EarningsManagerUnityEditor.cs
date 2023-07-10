@@ -31,27 +31,6 @@ namespace Candlestick
             Logger.UserDebug("Showing in-app page for earnings of '" + settings.UserId + "' with promo type '" + settings.PromoType.ToString() + "'...");
         }
 
-        public void GenerateAuthCodeForPhoneNumber(string phoneNumber)
-        {
-        }
-
-        public void LoginByPhoneAuthCode(string phoneNumber, string code, Int64 codeCreatedAt)
-        {
-            LoginByPhoneAuthCode(phoneNumber, code, codeCreatedAt, null);
-        }
-
-        public void LoginByPhoneAuthCode(string phoneNumber, string authCode, Int64 codeCreatedAt, string userId)
-        {
-        }
-
-        public void GenerateVerificationCodeForEmail(string email)
-        {
-        }
-
-        public void VerifyEmail(string email, string verificationCode, Int64 codeCreatedAt)
-        {
-        }
-
         public ExperimentInfo GetExperimentInfo()
         {
             return null;

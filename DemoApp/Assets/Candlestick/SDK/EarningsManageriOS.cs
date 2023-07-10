@@ -46,47 +46,6 @@ namespace Candlestick
         }
 
         [DllImport("__Internal")]
-        private static extern void _CSGenerateAuthCodeForPhoneNumber(string phoneNumber);
-
-        public void GenerateAuthCodeForPhoneNumber(string phoneNumber)
-        {
-            _CSGenerateAuthCodeForPhoneNumber(phoneNumber);
-        }
-
-        [DllImport("__Internal")]
-        private static extern void _CSLoginByPhoneAuthCode(string loginJson);
-
-        public void LoginByPhoneAuthCode(string phoneNumber, string code, Int64 codeCreatedAt)
-        {
-            LoginByPhoneAuthCode(phoneNumber, code, codeCreatedAt, null);
-        }
-
-        public void LoginByPhoneAuthCode(string phoneNumber, string code, Int64 codeCreatedAt, string userId)
-        {
-            var json = new LoginJson(phoneNumber, code, codeCreatedAt, userId);
-
-            _CSLoginByPhoneAuthCode(JsonUtility.ToJson(json));
-        }
-
-        [DllImport("__Internal")]
-        private static extern void _CSGenerateVerificationCodeForEmail(string email);
-
-        public void GenerateVerificationCodeForEmail(string email)
-        {
-            _CSGenerateVerificationCodeForEmail(email);
-        }
-
-        [DllImport("__Internal")]
-        private static extern void _CSVerifyEmail(string verifyJson);
-
-        public void VerifyEmail(string email, string code, Int64 codeCreatedAt)
-        {
-            var json = new VerificationJson(email, code, codeCreatedAt);
-
-            _CSVerifyEmail(JsonUtility.ToJson(json));
-        }
-
-        [DllImport("__Internal")]
         private static extern string _CSGetEarningsExperimentUserInfo();
 
         public ExperimentInfo GetExperimentInfo()
