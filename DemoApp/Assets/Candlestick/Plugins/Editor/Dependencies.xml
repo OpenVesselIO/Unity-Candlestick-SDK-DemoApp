@@ -5,10 +5,10 @@
       <repository>https://repo.candlestick.com/prj-cs-shared-public-a17f/mvn-public/</repository>
       <repository>https://jcenter.bintray.com/</repository>
     </repositories>
-    <androidPackage spec="com.candlestick:sdk:[1.0.16,1.1.0["/>
+    <androidPackage spec="com.candlestick:sdk:[1.0.17,1.1.0["/>
   </androidPackages>
   <iosPods>
-    <iosPod name="CandlestickSDK" version="~&gt; 1.0.24">
+    <iosPod name="CandlestickSDK" version="~&gt; 1.0.25">
       <sources>
         <source>https://github.com/OpenVesselIO/iOS-Candlestick-Pods.git</source>
       </sources>
