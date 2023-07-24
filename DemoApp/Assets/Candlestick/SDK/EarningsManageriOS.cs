@@ -28,24 +28,6 @@ namespace Candlestick
         }
 
         [DllImport("__Internal")]
-        private static extern void _CSShowEarnings(string settingsJson);
-
-        public void ShowEarnings()
-        {
-            ShowEarnings(new EarningsPresentationSettings());
-        }
-
-        public void ShowEarnings(string userId)
-        {
-            ShowEarnings(new EarningsPresentationSettings(userId));
-        }
-
-        public void ShowEarnings(EarningsPresentationSettings settings)
-        {
-            _CSShowEarnings(JsonUtility.ToJson(new PresentationSettingsJson(settings)));
-        }
-
-        [DllImport("__Internal")]
         private static extern string _CSGetEarningsExperimentUserInfo();
 
         public ExperimentInfo GetExperimentInfo()

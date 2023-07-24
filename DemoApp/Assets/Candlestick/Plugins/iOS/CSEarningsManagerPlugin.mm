@@ -37,43 +37,6 @@ extern "C" {
         [CSKSdk.sharedInstance.earningsManager trackImpressionWithTriggerName:NSSTRING(triggerName)];
     }
 
-    void _CSShowEarnings(const char * settingsJson)
-    {
-        NSData *settingsJsonData = [NSSTRING(settingsJson) dataUsingEncoding:NSUTF8StringEncoding];
-
-        NSError *error;
-        NSDictionary *settingsDict = [NSJSONSerialization JSONObjectWithData: settingsJsonData
-                                                                     options: kNilOptions
-                                                                       error: &error];
-
-        if (settingsDict == nil) {
-            return;
-        }
-
-        NSString *promoTypeString = settingsDict[@"promoType"];
-
-        CSKEarningsPromoType promoType;
-
-        if ([@"STATIC" isEqualToString:promoTypeString]) {
-            promoType = CSKEarningsPromoTypeStatic;
-        }
-        else if ([@"VIDEO" isEqualToString:promoTypeString]) {
-            promoType = CSKEarningsPromoTypeVideo;
-        }
-        else {
-            return;
-        }
-
-        CSKEarningsPresentationSettings *settings;
-        settings = [CSKEarningsPresentationSettings settingsWithUserId:settingsDict[@"userId"]];
-        settings.promoType = promoType;
-        settings.triggerName = settingsDict[@"triggerName"];
-
-        [CSKSdk.sharedInstance.earningsManager presentEarningsFromViewController: UNITY_VIEW_CONTROLLER
-                                                                    withSettings: settings
-                                                                        animated: YES];
-    }
-
     const char * _CSGetEarningsExperimentUserInfo()
     {
         CSKEarningsExperimentUserInfo *experimentUserInfo = CSKSdk.sharedInstance.earningsManager.experimentUserInfo;

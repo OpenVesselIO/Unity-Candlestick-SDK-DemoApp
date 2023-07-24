@@ -23,21 +23,6 @@ namespace Candlestick
             PluginClass.CallStatic("trackImpression", triggerName);
         }
 
-        public void ShowEarnings()
-        {
-            ShowEarnings(new EarningsPresentationSettings());
-        }
-
-        public void ShowEarnings(string userId)
-        {
-            ShowEarnings(new EarningsPresentationSettings(userId));
-        }
-
-        public void ShowEarnings(EarningsPresentationSettings settings)
-        {
-            PluginClass.CallStatic("showEarnings", JsonUtility.ToJson(new PresentationSettingsJson(settings)));
-        }
-
     }
 #endif
 }
