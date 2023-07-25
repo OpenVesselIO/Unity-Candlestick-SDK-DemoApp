@@ -131,7 +131,7 @@ public class Demo : MonoBehaviour
 #if UNITY_IOS
     private void HandleConsentFlowInfo()
     {
-        // do nothing
+        MaxSdk.InitializeSdk();
     }
 #endif
     private void HandleAppConnectState(Candlestick.AppConnectState state)
