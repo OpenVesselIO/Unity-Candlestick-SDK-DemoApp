@@ -129,8 +129,13 @@ public class Demo : MonoBehaviour
         Candlestick.Sdk.EarningsManager.TrackImpression(_earningsImpressionTriggerNameInputField.text);
     }
 #if UNITY_IOS
-    private void HandleConsentFlowInfo()
+    private void HandleConsentFlowInfo(bool hasUserConsent)
     {
+        if (hasUserConsent)
+        {
+            MaxSdk.SetExtraParameter("consent_flow_enabled", "false");
+        }
+
         MaxSdk.InitializeSdk();
     }
 #endif
