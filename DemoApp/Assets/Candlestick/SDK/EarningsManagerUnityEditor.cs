@@ -12,10 +12,6 @@ namespace Candlestick
         {
         }
 
-        public void TrackImpression(string triggerName)
-        {
-        }
-
         public ExperimentInfo GetExperimentInfo()
         {
             return null;

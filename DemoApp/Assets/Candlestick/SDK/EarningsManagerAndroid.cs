@@ -18,11 +18,6 @@ namespace Candlestick
             PluginClass.CallStatic("trackRevenuedAd", adType.ToString().ToUpperInvariant());
         }
 
-        public void TrackImpression(string triggerName)
-        {
-            PluginClass.CallStatic("trackImpression", triggerName);
-        }
-
     }
 #endif
 }

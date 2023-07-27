@@ -23,9 +23,6 @@ public class Demo : MonoBehaviour
 
     public Button _trackRandomRevenuedAdButton;
 
-    public InputField _earningsImpressionTriggerNameInputField;
-    public Button _trackEarningsImpressionButton;
-
     private int _portalShowCallCount;
     private int _portalDismissCallCount;
 
@@ -124,10 +121,6 @@ public class Demo : MonoBehaviour
         PopupUtils.ShowPopup(adType.ToString());
     }
 
-    public void TrackEarningsImpression()
-    {
-        Candlestick.Sdk.EarningsManager.TrackImpression(_earningsImpressionTriggerNameInputField.text);
-    }
 #if UNITY_IOS
     private void HandleConsentFlowInfo(bool hasUserConsent)
     {
@@ -198,7 +191,6 @@ public class Demo : MonoBehaviour
 
         _checkCompanionAppInstallButton.interactable = true;
         _trackRandomRevenuedAdButton.interactable = true;
-        _trackEarningsImpressionButton.interactable = true;
     }
 
 }

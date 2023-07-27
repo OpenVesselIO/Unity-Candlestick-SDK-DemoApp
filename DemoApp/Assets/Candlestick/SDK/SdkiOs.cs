@@ -44,25 +44,14 @@ namespace Candlestick
         }
 
         [DllImport("__Internal")]
-        private static extern void _CSInitialize(string userId);
+        private static extern void _CSInitialize();
 
         /// <summary>
         /// Initialize Candlestick SDK
         /// </summary>
         public static void Initialize()
         {
-            Initialize(null);
-        }
-
-        /// <summary>
-        /// Initialize Candlestick SDK
-        /// </summary>
-        /// <param name="userId">
-        /// Optional in-app user ID
-        /// </param>
-        public static void Initialize(string userId)
-        {
-            _CSInitialize(userId);
+            _CSInitialize();
 
             Application.deepLinkActivated += OnDeepLinkActivated;
 

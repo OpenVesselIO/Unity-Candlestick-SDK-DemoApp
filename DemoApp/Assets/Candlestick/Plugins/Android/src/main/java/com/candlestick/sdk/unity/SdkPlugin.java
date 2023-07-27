@@ -21,7 +21,7 @@ public class SdkPlugin
 {
     private static final CandlestickSdkListener forwardingListener = new ForwardingSdkListener();
 
-    public static void initialize(final String cuid)
+    public static void initialize()
     {
         AppConnectManagerPlugin.initialize();
         PresenterPlugin.initialize();
@@ -29,7 +29,7 @@ public class SdkPlugin
         final CandlestickSdk sdk = CandlestickSdk.getInstance( currentActivity );
         sdk.setListener( forwardingListener );
 
-        sdk.initialize( cuid );
+        sdk.initialize();
     }
 
     public static void setEnvironment(final String environment)

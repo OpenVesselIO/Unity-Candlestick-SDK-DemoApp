@@ -20,14 +20,6 @@ namespace Candlestick
         }
 
         [DllImport("__Internal")]
-        private static extern void _CSTrackImpression(string triggerName);
-
-        public void TrackImpression(string triggerName)
-        {
-            _CSTrackImpression(triggerName);
-        }
-
-        [DllImport("__Internal")]
         private static extern string _CSGetEarningsExperimentUserInfo();
 
         public ExperimentInfo GetExperimentInfo()

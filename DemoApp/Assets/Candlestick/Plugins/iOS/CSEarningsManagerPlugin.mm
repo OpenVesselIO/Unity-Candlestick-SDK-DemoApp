@@ -32,11 +32,6 @@ extern "C" {
         [CSKSdk.sharedInstance.earningsManager trackRevenuedAd:adType];
     }
 
-    void _CSTrackImpression(const char * triggerName)
-    {
-        [CSKSdk.sharedInstance.earningsManager trackImpressionWithTriggerName:NSSTRING(triggerName)];
-    }
-
     const char * _CSGetEarningsExperimentUserInfo()
     {
         CSKEarningsExperimentUserInfo *experimentUserInfo = CSKSdk.sharedInstance.earningsManager.experimentUserInfo;

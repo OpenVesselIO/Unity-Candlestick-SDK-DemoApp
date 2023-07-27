@@ -32,13 +32,6 @@ public class EarningsManagerPlugin
         }
     }
 
-    public static void trackImpression(final String triggerName)
-    {
-        final CandlestickSdk sdk = CandlestickSdk.getInstance( currentActivity );
-
-        sdk.getEarningsManager().trackImpression( triggerName );
-    }
-
     private static void UnitySendMessageAsync(final String method, final JSONObject jsonObj)
     {
         UnitySendMessageAsync( method, jsonObj.toString() );
