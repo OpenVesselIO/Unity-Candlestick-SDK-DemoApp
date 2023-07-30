@@ -10,14 +10,14 @@
 
 extern "C" {
         
-    void _CSInitialize(const char * userId)
+    void _CSInitialize()
     {
         [CSSdkPluginDelegateForwarder.sharedInstance attachDelegate];
         [CSAppConnectManagerDelegateForwarder.sharedInstance attachDelegate];
         [CSPresenterPluginDelegateForwarder.sharedInstance attachDelegate];
         [CSEarningsManagerDelegateForwarder.sharedInstance attachDelegate];
         
-        [CSKSdk.sharedInstance startWithUserId: NSSTRING(userId)];
+        [CSKSdk.sharedInstance start];
     }
 
     void _CSSetEnvironment(const char * environment)

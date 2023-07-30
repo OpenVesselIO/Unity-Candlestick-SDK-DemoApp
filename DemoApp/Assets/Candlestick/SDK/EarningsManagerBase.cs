@@ -21,31 +21,6 @@ namespace Candlestick
 
     }
 
-    public enum EarningsPromoType
-    {
-
-        Static,
-
-        //Video,
-
-    }
-
-    public class EarningsPresentationSettings
-    {
-
-        public string UserId { get; }
-        public EarningsPromoType PromoType = EarningsPromoType.Static;
-        public string TriggerName;
-
-        public EarningsPresentationSettings() : this(null) {}
-
-        public EarningsPresentationSettings(string userId)
-        {
-            this.UserId = userId;
-        }
-
-    }
-
     public class EarningsManagerBase
     {
 
@@ -61,28 +36,6 @@ namespace Candlestick
             {
                 InstallationId = installationId;
                 Extras = extras;
-            }
-
-        }
-
-        [Serializable]
-        protected class PresentationSettingsJson
-        {
-
-            [SerializeField]
-            string userId;
-
-            [SerializeField]
-            string promoType;
-
-            [SerializeField]
-            string triggerName;
-
-            internal PresentationSettingsJson(EarningsPresentationSettings settings)
-            {
-                userId = settings.UserId;
-                promoType = settings.PromoType.ToString().ToUpperInvariant();
-                triggerName = settings.TriggerName;
             }
 
         }

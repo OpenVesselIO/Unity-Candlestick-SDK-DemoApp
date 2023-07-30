@@ -8,11 +8,20 @@ namespace Candlestick
 {
     public class SdkCallbacks : MonoBehaviour
     {
+
+        [Serializable]
+        private class ConsentFlowFinishParametersJson
+        {
+
+            [SerializeField] internal bool hasUserConsent;
+
+        }
+
         public static SdkCallbacks Instance { get; private set; }
 
         private static Action _onSdkInitialized;
 #if UNITY_IOS
-        private static Action _onSdkConsentFlowFinished;
+        private static Action<bool> _onSdkConsentFlowFinished;
 #endif
 
         public static event Action OnSdkInitialized
@@ -29,7 +38,7 @@ namespace Candlestick
             }
         }
 #if UNITY_IOS
-        public static event Action OnSdkConsentFlowFinished
+        public static event Action<bool> OnSdkConsentFlowFinished
         {
             add
             {
@@ -50,7 +59,9 @@ namespace Candlestick
 #if UNITY_IOS
         public void ForwardOnSdkConsentFlowFinishedEvent(string json)
         {
-            EventInvoker.InvokeEvent(_onSdkConsentFlowFinished);
+            var parameters = JsonUtility.FromJson<ConsentFlowFinishParametersJson>(json);
+
+            EventInvoker.InvokeEvent(_onSdkConsentFlowFinished, parameters.hasUserConsent);
         }
 #endif
         void Awake()

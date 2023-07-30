@@ -58,9 +58,9 @@ extern "C" {
     sdk_send_message("ForwardOnSdkInitializedEvent", @{});
 }
 
-- (void)candlestickSdkDidFinishConsentFlow:(CSKSdk *)sdk
+- (void)candlestickSdkDidFinishConsentFlow:(CSKSdk *)sdk hasUserConsent:(BOOL)hasUserConsent
 {
-    sdk_send_message("ForwardOnSdkConsentFlowFinishedEvent", @{});
+    sdk_send_message("ForwardOnSdkConsentFlowFinishedEvent", @{ @"hasUserConsent": @(hasUserConsent) });
 }
 
 + (CSSdkPluginDelegateForwarder *)sharedInstance

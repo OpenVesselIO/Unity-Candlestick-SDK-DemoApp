@@ -20,13 +20,8 @@ public class Demo : MonoBehaviour
     public Text _statusText;
 
     public Button _checkCompanionAppInstallButton;
-    public Button _showEarningsWithStaticPromoButton;
-    public Button _showEarningsWithVideoPromoButton;
 
     public Button _trackRandomRevenuedAdButton;
-
-    public InputField _earningsImpressionTriggerNameInputField;
-    public Button _trackEarningsImpressionButton;
 
     private int _portalShowCallCount;
     private int _portalDismissCallCount;
@@ -114,24 +109,6 @@ public class Demo : MonoBehaviour
         PopupUtils.ShowPopup(text);
     }
 
-    public void ShowEarningsWithStaticPromo()
-    {
-        Debug.Log("Showing earnings with static promo inside of the current application...");
-
-        Candlestick.Sdk.EarningsManager.ShowEarnings();
-    }
-
-    public void ShowEarningsWithVideoPromo()
-    {
-        //Debug.Log("Showing earnings with video promo inside of the current application...");
-
-        //var settings = new EarningsPresentationSettings();
-        //settings.PromoType = EarningsPromoType.Video;
-        //settings.TriggerName = "show_earnings_with_video_promo_button";
-
-        //Candlestick.Sdk.EarningsManager.ShowEarnings(settings);
-    }
-
     public void TrackRandomRevenuedAd()
     {
         Debug.Log("Tracking random revenued ad...");
@@ -144,14 +121,15 @@ public class Demo : MonoBehaviour
         PopupUtils.ShowPopup(adType.ToString());
     }
 
-    public void TrackEarningsImpression()
-    {
-        Candlestick.Sdk.EarningsManager.TrackImpression(_earningsImpressionTriggerNameInputField.text);
-    }
 #if UNITY_IOS
-    private void HandleConsentFlowInfo()
+    private void HandleConsentFlowInfo(bool hasUserConsent)
     {
-        // do nothing
+        if (hasUserConsent)
+        {
+            MaxSdk.SetExtraParameter("consent_flow_enabled", "false");
+        }
+
+        MaxSdk.InitializeSdk();
     }
 #endif
     private void HandleAppConnectState(Candlestick.AppConnectState state)
@@ -212,10 +190,7 @@ public class Demo : MonoBehaviour
         }
 
         _checkCompanionAppInstallButton.interactable = true;
-        _showEarningsWithStaticPromoButton.interactable = true;
-        _showEarningsWithVideoPromoButton.interactable = true;
         _trackRandomRevenuedAdButton.interactable = true;
-        _trackEarningsImpressionButton.interactable = true;
     }
 
 }

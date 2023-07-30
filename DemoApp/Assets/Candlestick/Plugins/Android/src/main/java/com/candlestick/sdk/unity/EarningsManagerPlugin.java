@@ -32,51 +32,6 @@ public class EarningsManagerPlugin
         }
     }
 
-    public static void trackImpression(final String triggerName)
-    {
-        final CandlestickSdk sdk = CandlestickSdk.getInstance( currentActivity );
-
-        sdk.getEarningsManager().trackImpression( triggerName );
-    }
-
-    public static void showEarnings(final String settingsJson)
-    {
-        if ( StringUtils.isValidString( settingsJson ) )
-        {
-            try
-            {
-                final JSONObject settings = new JSONObject( settingsJson );
-
-                final CandlestickSdk sdk = CandlestickSdk.getInstance( currentActivity );
-
-                final EarningsActivitySettings.PromoType promoTypeOrNull = EarningsActivitySettings.PromoType
-                        .valueOfOrNull( settings.getString( "promoType" ) );
-
-                if ( promoTypeOrNull != null )
-                {
-                    try
-                    {
-                        sdk.getEarningsManager().startEarningsActivity(
-                                EarningsActivitySettings.builder( settings.optString( "userId" ) )
-                                        .promoType( promoTypeOrNull )
-                                        .triggerName( settings.getString( "triggerName" ) )
-                                        .build(),
-                                currentActivity
-                        );
-                    }
-                    catch ( Exception ex )
-                    {
-                        Logger.userError( TAG, "Unable to parse settings", ex );
-                    }
-                }
-            }
-            catch ( Exception ex )
-            {
-                Logger.userError( TAG, "Unable to parse settings", ex );
-            }
-        }
-    }
-
     private static void UnitySendMessageAsync(final String method, final JSONObject jsonObj)
     {
         UnitySendMessageAsync( method, jsonObj.toString() );
