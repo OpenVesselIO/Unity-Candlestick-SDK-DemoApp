@@ -10,6 +10,7 @@ using UnityEditor.Callbacks;
 using UnityEditor.iOS.Xcode;
 using UnityEditor.Android;
 using Candlestick.Utils;
+using AppLovinMax.Scripts.IntegrationManager.Editor;
 
 namespace Candlestick
 {
@@ -33,6 +34,7 @@ namespace Candlestick
 
             AddApplicationQueriesSchemesIfNeeded(plist);
             AddCustomUrlSchemesIfNeeded(plist);
+            AddConsentFlowInfoIfNeeded(plist);
 
             plist.WriteToFile(plistPath);
         }
@@ -113,6 +115,28 @@ namespace Candlestick
                 var schemeDict = urlTypes.AsArray().AddDict();
                 schemeDict.SetString("CFBundleURLName", "");
                 schemeDict.CreateArray(schemesKey).AddString(scheme);
+            }
+        }
+
+        private static void AddConsentFlowInfoIfNeeded(PlistDocument plist)
+        {
+            if (!AppLovinSettings.Instance.ShowInternalSettingsInIntegrationManager) return;
+
+            // Check if terms flow is enabled. No need to update info.plist if consent flow is disabled.
+            var consentFlowEnabled = AppLovinInternalSettings.Instance.ConsentFlowEnabled;
+            if (!consentFlowEnabled) return;
+
+            var userTrackingUsageDescription = AppLovinInternalSettings.Instance.UserTrackingUsageDescriptionEn;
+            var privacyPolicyUrl = AppLovinInternalSettings.Instance.ConsentFlowPrivacyPolicyUrl;
+            if (string.IsNullOrEmpty(userTrackingUsageDescription) || string.IsNullOrEmpty(privacyPolicyUrl)) return;
+
+            var consentFlowInfoRoot = plist.root.CreateDict("CandlestickConsentFlowInfo");
+            consentFlowInfoRoot.SetString("PrivacyPolicyUrl", privacyPolicyUrl);
+
+            var termsOfServiceUrl = AppLovinInternalSettings.Instance.ConsentFlowTermsOfServiceUrl;
+            if (!string.IsNullOrEmpty(termsOfServiceUrl))
+            {
+                consentFlowInfoRoot.SetString("TermsOfServiceUrl", termsOfServiceUrl);
             }
         }
 
