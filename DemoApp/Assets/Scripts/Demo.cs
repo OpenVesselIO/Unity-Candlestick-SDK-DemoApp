@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if UNITY_IOS
+using System;
 using Candlestick;
 using UnityEngine;
 using UnityEngine.UI;
@@ -194,3 +195,4 @@ public class Demo : MonoBehaviour
     }
 
 }
+#endif

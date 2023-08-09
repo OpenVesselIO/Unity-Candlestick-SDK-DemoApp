@@ -142,157 +142,157 @@ namespace Candlestick
 
     }
 
-    public class AndroidPostBuildProcessor : IPostGenerateGradleAndroidProject
-    {
-        public int callbackOrder
-        {
-            get
-            {
-                return int.MaxValue;
-            }
-        }
+    // public class AndroidPostBuildProcessor : IPostGenerateGradleAndroidProject
+    // {
+    //     public int callbackOrder
+    //     {
+    //         get
+    //         {
+    //             return int.MaxValue;
+    //         }
+    //     }
 
-        void IPostGenerateGradleAndroidProject.OnPostGenerateGradleAndroidProject(string unityLibraryPath)
-        {
-            AddCustomUrlSchemesIfNeeded(unityLibraryPath);
-            PatchBuildFileIfNeeded(unityLibraryPath);
-        }
+    //     void IPostGenerateGradleAndroidProject.OnPostGenerateGradleAndroidProject(string unityLibraryPath)
+    //     {
+    //         AddCustomUrlSchemesIfNeeded(unityLibraryPath);
+    //         PatchBuildFileIfNeeded(unityLibraryPath);
+    //     }
 
-        private static void AddCustomUrlSchemesIfNeeded(string unityLibraryPath)
-        {
-            const string activityElementName = "activity";
-            const string dataElementName = "data";
-            const string intentFilterElementName = "intent-filter";
+    //     private static void AddCustomUrlSchemesIfNeeded(string unityLibraryPath)
+    //     {
+    //         const string activityElementName = "activity";
+    //         const string dataElementName = "data";
+    //         const string intentFilterElementName = "intent-filter";
 
-            const string nameAttributeName = "name";
-            const string schemeAttributeName = "scheme";
+    //         const string nameAttributeName = "name";
+    //         const string schemeAttributeName = "scheme";
 
-            const string deepLinkHandlerActivityName = "com.candlestick.sdk.activities.DeeplinkActivity";
+    //         const string deepLinkHandlerActivityName = "com.candlestick.sdk.activities.DeeplinkActivity";
 
-            const string androidNamespace = "android";
-            const string androidNamespaceUri = "http://schemas.android.com/apk/res/android";
+    //         const string androidNamespace = "android";
+    //         const string androidNamespaceUri = "http://schemas.android.com/apk/res/android";
 
-            var callbackUrlScheme = Callback.GetDefaultCallbackUrlScheme(BuildTargetGroup.Android);
+    //         var callbackUrlScheme = Callback.GetDefaultCallbackUrlScheme(BuildTargetGroup.Android);
 
-            var manifestPath = Path.Combine(unityLibraryPath, "src", "main", "AndroidManifest.xml");
+    //         var manifestPath = Path.Combine(unityLibraryPath, "src", "main", "AndroidManifest.xml");
 
-            var manifest = new XmlDocument();
-            manifest.PreserveWhitespace = true;
-            manifest.Load(manifestPath);
+    //         var manifest = new XmlDocument();
+    //         manifest.PreserveWhitespace = true;
+    //         manifest.Load(manifestPath);
 
-            var namespaceManager = new XmlNamespaceManager(manifest.NameTable);
-            namespaceManager.AddNamespace(androidNamespace, androidNamespaceUri);
+    //         var namespaceManager = new XmlNamespaceManager(manifest.NameTable);
+    //         namespaceManager.AddNamespace(androidNamespace, androidNamespaceUri);
 
-            var applicationElement = manifest.SelectSingleNode("/manifest/application") as XmlElement;
+    //         var applicationElement = manifest.SelectSingleNode("/manifest/application") as XmlElement;
 
-            var deepLinkHandlerActivityElement = applicationElement.SelectSingleNode(
-                $"{activityElementName}[@{androidNamespace}:{nameAttributeName} = '{deepLinkHandlerActivityName}']",
-                namespaceManager
-            ) as XmlElement;
+    //         var deepLinkHandlerActivityElement = applicationElement.SelectSingleNode(
+    //             $"{activityElementName}[@{androidNamespace}:{nameAttributeName} = '{deepLinkHandlerActivityName}']",
+    //             namespaceManager
+    //         ) as XmlElement;
 
-            if (deepLinkHandlerActivityElement == null)
-            {
-                deepLinkHandlerActivityElement = manifest.CreateElement(activityElementName);
+    //         if (deepLinkHandlerActivityElement == null)
+    //         {
+    //             deepLinkHandlerActivityElement = manifest.CreateElement(activityElementName);
 
-                applicationElement.AppendChild(deepLinkHandlerActivityElement);
+    //             applicationElement.AppendChild(deepLinkHandlerActivityElement);
 
-                deepLinkHandlerActivityElement.SetAttribute(
-                    nameAttributeName,
-                    androidNamespaceUri,
-                    deepLinkHandlerActivityName
-                );
-                deepLinkHandlerActivityElement.SetAttribute("exported", androidNamespaceUri, "true");
-            }
+    //             deepLinkHandlerActivityElement.SetAttribute(
+    //                 nameAttributeName,
+    //                 androidNamespaceUri,
+    //                 deepLinkHandlerActivityName
+    //             );
+    //             deepLinkHandlerActivityElement.SetAttribute("exported", androidNamespaceUri, "true");
+    //         }
 
-            var intentFilterDataXPath = (
-                $"{intentFilterElementName}/{dataElementName}[@{androidNamespace}:{schemeAttributeName} = '{callbackUrlScheme}']"
-            );
+    //         var intentFilterDataXPath = (
+    //             $"{intentFilterElementName}/{dataElementName}[@{androidNamespace}:{schemeAttributeName} = '{callbackUrlScheme}']"
+    //         );
 
-            if (deepLinkHandlerActivityElement.SelectSingleNode(intentFilterDataXPath, namespaceManager) == null)
-            {
-                var intentFilterElement = manifest.CreateElement(intentFilterElementName);
+    //         if (deepLinkHandlerActivityElement.SelectSingleNode(intentFilterDataXPath, namespaceManager) == null)
+    //         {
+    //             var intentFilterElement = manifest.CreateElement(intentFilterElementName);
 
-                deepLinkHandlerActivityElement.AppendChild(intentFilterElement);
+    //             deepLinkHandlerActivityElement.AppendChild(intentFilterElement);
 
-                var actionElement = manifest.CreateElement("action");
-                actionElement.SetAttribute(nameAttributeName, androidNamespaceUri, "android.intent.action.VIEW");
+    //             var actionElement = manifest.CreateElement("action");
+    //             actionElement.SetAttribute(nameAttributeName, androidNamespaceUri, "android.intent.action.VIEW");
 
-                string[] categories = { "android.intent.category.DEFAULT", "android.intent.category.BROWSABLE" };
+    //             string[] categories = { "android.intent.category.DEFAULT", "android.intent.category.BROWSABLE" };
 
-                foreach (var category in categories)
-                {
-                    var categoryElement = manifest.CreateElement("category");
-                    categoryElement.SetAttribute(nameAttributeName, androidNamespaceUri, category);
+    //             foreach (var category in categories)
+    //             {
+    //                 var categoryElement = manifest.CreateElement("category");
+    //                 categoryElement.SetAttribute(nameAttributeName, androidNamespaceUri, category);
 
-                    intentFilterElement.AppendChild(categoryElement);
-                }
+    //                 intentFilterElement.AppendChild(categoryElement);
+    //             }
 
-                var dataElement = manifest.CreateElement(dataElementName);
-                dataElement.SetAttribute(schemeAttributeName, androidNamespaceUri, callbackUrlScheme);
-                dataElement.SetAttribute("host", androidNamespaceUri, Callback.DefaultCallbackUrlHost);
+    //             var dataElement = manifest.CreateElement(dataElementName);
+    //             dataElement.SetAttribute(schemeAttributeName, androidNamespaceUri, callbackUrlScheme);
+    //             dataElement.SetAttribute("host", androidNamespaceUri, Callback.DefaultCallbackUrlHost);
 
-                intentFilterElement.AppendChild(dataElement);
-                intentFilterElement.AppendChild(actionElement);
+    //             intentFilterElement.AppendChild(dataElement);
+    //             intentFilterElement.AppendChild(actionElement);
 
-                manifest.Save(manifestPath);
-            }
-        }
+    //             manifest.Save(manifestPath);
+    //         }
+    //     }
 
-        private static void PatchBuildFileIfNeeded(string unityLibraryPath)
-        {
-            var billingGroup = "com.android.billingclient";
-            var billingModule = "billing";
-            var billingMajorVersion = "4";
+    //     private static void PatchBuildFileIfNeeded(string unityLibraryPath)
+    //     {
+    //         var billingGroup = "com.android.billingclient";
+    //         var billingModule = "billing";
+    //         var billingMajorVersion = "4";
 
-            var triggerLine = $"implementation(name: 'billing-{billingMajorVersion}.";
-            var dependencyToRemove = $"implementation(name: '{billingGroup}.{billingModule}-{billingMajorVersion}.";
+    //         var triggerLine = $"implementation(name: 'billing-{billingMajorVersion}.";
+    //         var dependencyToRemove = $"implementation(name: '{billingGroup}.{billingModule}-{billingMajorVersion}.";
 
-            var buildFilePath = Path.Combine(unityLibraryPath, "build.gradle");
-            var buildFileLines = new List<string>(File.ReadAllLines(buildFilePath));
+    //         var buildFilePath = Path.Combine(unityLibraryPath, "build.gradle");
+    //         var buildFileLines = new List<string>(File.ReadAllLines(buildFilePath));
 
-            foreach (var line in buildFileLines)
-            {
-                if (line.Trim().StartsWith(triggerLine, StringComparison.OrdinalIgnoreCase))
-                {
-                    var isPatched = false;
+    //         foreach (var line in buildFileLines)
+    //         {
+    //             if (line.Trim().StartsWith(triggerLine, StringComparison.OrdinalIgnoreCase))
+    //             {
+    //                 var isPatched = false;
 
-                    for (var i = 0; i < buildFileLines.Count; i++)
-                    {
-                        if (buildFileLines[i].Trim().StartsWith(dependencyToRemove, StringComparison.OrdinalIgnoreCase))
-                        {
-                            buildFileLines[i] = "// " + buildFileLines[i];
-                            isPatched = true;
-                        }
-                    }
+    //                 for (var i = 0; i < buildFileLines.Count; i++)
+    //                 {
+    //                     if (buildFileLines[i].Trim().StartsWith(dependencyToRemove, StringComparison.OrdinalIgnoreCase))
+    //                     {
+    //                         buildFileLines[i] = "// " + buildFileLines[i];
+    //                         isPatched = true;
+    //                     }
+    //                 }
 
-                    if (!isPatched)
-                    {
-                        var csDependencyRegex = new Regex(@"^(\s*)(implementation)\s+('com.candlestick:sdk:.+?')(.+)$");
+    //                 if (!isPatched)
+    //                 {
+    //                     var csDependencyRegex = new Regex(@"^(\s*)(implementation)\s+('com.candlestick:sdk:.+?')(.+)$");
 
-                        for (var i = 0; i < buildFileLines.Count; i++)
-                        {
-                            var match = csDependencyRegex.Match(buildFileLines[i]);
+    //                     for (var i = 0; i < buildFileLines.Count; i++)
+    //                     {
+    //                         var match = csDependencyRegex.Match(buildFileLines[i]);
 
-                            if (match.Success)
-                            {
-                                buildFileLines[i] = $"{match.Groups[1].Captures[0]}{match.Groups[2].Captures[0]}({match.Groups[3].Captures[0]}) {{{match.Groups[4].Captures[0]}";
+    //                         if (match.Success)
+    //                         {
+    //                             buildFileLines[i] = $"{match.Groups[1].Captures[0]}{match.Groups[2].Captures[0]}({match.Groups[3].Captures[0]}) {{{match.Groups[4].Captures[0]}";
 
-                                buildFileLines.Insert(i + 1, $"{match.Groups[1].Captures[0].Value}}}");
-                                buildFileLines.Insert(i + 1, $"{match.Groups[1].Captures[0].Value.Repeat(2)}exclude group: '{billingGroup}', module: '{billingModule}'");
+    //                             buildFileLines.Insert(i + 1, $"{match.Groups[1].Captures[0].Value}}}");
+    //                             buildFileLines.Insert(i + 1, $"{match.Groups[1].Captures[0].Value.Repeat(2)}exclude group: '{billingGroup}', module: '{billingModule}'");
 
-                                isPatched = true;
-                                break;
-                            }
-                        }
-                    }
+    //                             isPatched = true;
+    //                             break;
+    //                         }
+    //                     }
+    //                 }
 
-                    break;
-                }
-            }
+    //                 break;
+    //             }
+    //         }
 
-            File.WriteAllLines(buildFilePath, buildFileLines);
-        }
+    //         File.WriteAllLines(buildFilePath, buildFileLines);
+    //     }
 
-    }
+    // }
 
 }

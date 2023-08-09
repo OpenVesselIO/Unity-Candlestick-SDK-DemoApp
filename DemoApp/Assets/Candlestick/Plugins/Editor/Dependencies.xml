@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <dependencies>
-  <androidPackages>
+  <!-- <androidPackages>
     <repositories>
       <repository>https://repo.candlestick.com/prj-cs-shared-public-a17f/mvn-public/</repository>
       <repository>https://jcenter.bintray.com/</repository>
     </repositories>
     <androidPackage spec="com.candlestick:sdk:[1.2.5,1.3.0["/>
-  </androidPackages>
+  </androidPackages> -->
   <iosPods>
     <iosPod name="CandlestickSDK" version="~&gt; 1.2.6">
       <sources>

@@ -1,3 +1,6 @@
+#if UNITY_ANDROID
+#else
+
 namespace Candlestick
 {
     public class Sdk :
@@ -14,3 +17,5 @@ namespace Candlestick
     {
     }
 }
+
+#endif
